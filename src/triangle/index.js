@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", function loaded() {
 
   gl = canvas.getContext("webgl2");
 
+  triangle();
+});
+
+function triangle() {
   const triangleVertices = new Float32Array([
     1.0,
     -1.0,
@@ -89,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function loaded() {
   gl.vertexAttribPointer(colorAttributeLocation, 4, gl.FLOAT, false, 0, 0);
 
   requestAnimationFrame(runRenderLoop);
-});
+}
 
 function runRenderLoop() {
   gl.clearColor(0, 0, 0, 1);
