@@ -13,7 +13,7 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    window.addEventListener("resize", () => {
+    window.addEventListener("resize", function onresize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
@@ -96,7 +96,7 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, triangleColorsBuffer);
     gl.vertexAttribPointer(colorAttributeLocation, 4, gl.FLOAT, false, 0, 0);
 
-    requestAnimationFrame(runRenderLoop);
+    runRenderLoop();
   }
 
   function runRenderLoop() {
