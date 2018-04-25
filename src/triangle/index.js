@@ -1,10 +1,12 @@
-import fragmentShaderSource from "./fragment.glsl";
-import vertexShaderSource from "./vertex.glsl";
+import { Vector, Engine } from '../../dist/gl';
+
+import fragmentShaderSource from "../shaders/triangle.fragment.glsl";
+import vertexShaderSource from "../shaders/triangle.vertex.glsl";
 
 let gl;
 
 document.addEventListener("DOMContentLoaded", function loaded() {
-  const canvas = document.getElementById("c");
+  const canvas = document.getElementById('c');
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -12,12 +14,54 @@ document.addEventListener("DOMContentLoaded", function loaded() {
   window.addEventListener("resize", function onresize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
   });
 
-  gl = canvas.getContext("webgl2");
+  gl = canvas.getContext('webgl2');
 
-  triangle();
+  lib();
+  // triangle();
 });
+
+function lib() {
+  const egl = new Engine(gl);
+
+  const {
+    FLOAT,
+    STATIC_DRAW,
+    ARRAY_BUFFER,
+    VERTEX_SHADER,
+    FRAGMENT_SHADER,
+  } = gl;
+
+  const vec_01 = new Vector(  1.0, -1.0, 0.0 );
+  const vec_02 = new Vector(  0.0,  1.0, 0.0 );
+  const vec_03 = new Vector( -1.0, -1.0, 0.0 );
+
+  const color_01 = new Vector( 1.0, 0.0, 0.0, 1.0 );
+  const color_02 = new Vector( 0.0, 1.0, 0.0, 1.0 );
+  const color_03 = new Vector( 0.0, 0.0, 1.0, 1.0 );
+
+  const vertices = new Float32Array([...vec_01, ...vec_02, ...vec_03]);
+
+  const colors = new Float32Array([...color_01, ...color_02, ...color_03]);
+
+  const triangleVerticesBuffer = egl.createBuffer(ARRAY_BUFFER,  vertices, STATIC_DRAW);
+
+  const triangleColorsBuffer = egl.createBuffer(ARRAY_BUFFER,  colors, STATIC_DRAW);
+
+  const vertexShader = egl.createShader(VERTEX_SHADER, vertexShaderSource);
+
+  const fragmentShader = egl.createShader(FRAGMENT_SHADER, fragmentShaderSource);
+
+  const shaderProgram = egl.createProgram(vertexShader, fragmentShader);
+
+  egl.createAttribute(shaderProgram, ARRAY_BUFFER, triangleVerticesBuffer, "position", 3, FLOAT);
+  egl.createAttribute(shaderProgram, ARRAY_BUFFER, triangleColorsBuffer, "color", 4, FLOAT);
+
+  egl.run();
+}
 
 function triangle() {
   const triangleVertices = new Float32Array([
@@ -50,7 +94,7 @@ function triangle() {
   const triangleVerticesBuffer = gl.createBuffer();
   const triangleColorsBuffer = gl.createBuffer();
 
-  // static draw tells the gpu that the input data will not change.
+  // static draw tells the gpu that the input data is not expected to change.
   gl.bindBuffer(gl.ARRAY_BUFFER, triangleVerticesBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, triangleVertices, gl.STATIC_DRAW);
 

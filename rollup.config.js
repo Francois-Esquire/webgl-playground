@@ -1,9 +1,15 @@
+import buble from "rollup-plugin-buble";
 import glsl from "rollup-plugin-glsl";
 
 const plugins = {
+  buble: buble({
+    transforms: {
+      forOf: false,
+    },
+  }),
   glsl: glsl({
-    include: "src/**/*.glsl"
-  })
+    include: "src/**/*.glsl",
+  }),
 };
 
 const triangles = {
@@ -12,4 +18,10 @@ const triangles = {
   plugins: [plugins.glsl]
 };
 
-export default [triangles];
+const gl = {
+  input: "lib/index.js",
+  output: { format: "es", file: "dist/gl.js", name: "gl" },
+  plugins: [plugins.buble]
+};
+
+export default [gl, triangles];
