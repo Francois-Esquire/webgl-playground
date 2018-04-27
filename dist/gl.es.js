@@ -1,44 +1,62 @@
 class Matrix {}
 
-const _instances = new WeakSet();
+var obj;
+var _instances = new WeakSet();
 
 class Vector {
-  constructor(...args) {
-    this.translate(...args);
+  constructor() {
+  var ref;
+
+  var args = [], len = arguments.length;
+  while ( len-- ) args[ len ] = arguments[ len ];
+    (ref = this).translate.apply(ref, args);
 
     _instances.add(this);
   }
 
   clone() {
-    return new Vector(...this);
+    return new (Function.prototype.bind.apply( Vector, [ null ].concat( this) ));
   }
 
-  translate(...args) {
-    const { x, y, z, w } = Vector.input(...args);
+  translate() {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
 
-    if (x) this.x = x;
-    if (y) this.y = y;
-    if (z) this.z = z;
-    if (w) this.w = w;
+    var ref = Vector.input.apply(Vector, args);
+    var x = ref.x;
+    var y = ref.y;
+    var z = ref.z;
+    var w = ref.w;
+
+    if (x) { this.x = x; }
+    if (y) { this.y = y; }
+    if (z) { this.z = z; }
+    if (w) { this.w = w; }
 
     return this;
   }
 
   invert() {
-    for (let point of this.keys) {
+    var this$1 = this;
+
+    for (var point of this$1.keys) {
       // ehhh...
-      this[point] = this[point] *= -1;
+      this$1[point] = this$1[point] *= -1;
     }
 
     return this;
   }
 
   get axis() {
-    const { x, y, z, w } = this;
+    var ref = this;
+    var x = ref.x;
+    var y = ref.y;
+    var z = ref.z;
+    var w = ref.w;
 
-    const points = Object.create(null);
+    var points = Object.create(null);
 
-    return Object.assign(points, { x, y, z, w });
+    return Object.assign(points, { x: x, y: y, z: z, w: w });
   }
 
   get keys() {
@@ -56,11 +74,14 @@ class Vector {
   [Symbol.iterator]() {
     return {
       points: (function _toArray(points) {
-        const { x, y, z, w } = points;
+        var x = points.x;
+        var y = points.y;
+        var z = points.z;
+        var w = points.w;
 
         return [x, y].concat(z || (w ? undefined : []), w || []);
       })(this),
-      next() {
+      next: function next() {
         return { done: this.points.length === 0, value: this.points.shift() };
       },
     };
@@ -78,65 +99,62 @@ class Vector {
         return JSON.stringify(this.axis);
     }
   }
+
+  static create(vector) {
+    return vector instanceof Vector ? vector.clone() : new Vector(vector);
+  }
 }
 
 // STATICS:
-Object.defineProperties(Vector, {
-  [Symbol.hasInstance]: {
-    value(instance) {
+Object.defineProperties(Vector, ( obj = {}, obj[Symbol.hasInstance] = {
+    value: function value(instance) {
       return _instances.has(instance);
     },
-  },
-  [Symbol.toStringTag]: {
-    get() {
+  }, obj[Symbol.toStringTag] = {
+    get: function get() {
       // TODO:
-      // will always be Vector4, counts formal arguments.
-      return `Vector${this.length}`;
+      // fix - will always be Vector4, counts formal arguments.
+      return ("Vector" + (this.length));
     },
-  },
-  create:{
+  }, obj.create = {
     value: function create(vector) {
       return vector instanceof Vector ? vector.clone() : new Vector(vector);
     },
-  },
-  remove: {
+  }, obj.remove = {
     value: function remove(ref) {
       _instances.delete(ref);
     },
-  },
-  purge: {
-    value: function purge() {
-      // useful? maybe with Set.
-      // deprecated...
-      _instances.clear();
-    },
-  },
-  input: {
-    value: function input(...args) {
-      const transform = args.length > 1 ? args : args[0] || {};
+  }, obj.input = {
+    value: function input() {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
 
-      let { x, y, z, w } = transform instanceof Array ?
-        transform.reduce((map, t, i) => {
+      var transform = args.length > 1 ? args : args[0] || {};
 
-          Object.assign(map, {
-            [String.fromCharCode(119 + (i === 3 ? 0 : i + 1))]: t,
-          });
+      var ref = transform instanceof Array ?
+        transform.reduce(function (map, t, i) {
+          var obj;
+
+          Object.assign(map, ( obj = {}, obj[String.fromCharCode(119 + (i === 3 ? 0 : i + 1))] = t, obj ));
 
           return map;
         }, {}) :
         transform;
+      var x = ref.x;
+      var y = ref.y;
+      var z = ref.z;
+      var w = ref.w;
 
       x = typeof x === 'number' ? x.toFixed() : 0.0;
       y = typeof y === 'number' ? y.toFixed() : 0.0;
-      if (typeof z === 'number') z = z.toFixed();
-      if (typeof w === 'number') w = w.toFixed();
+      if (typeof z === 'number') { z = z.toFixed(); }
+      if (typeof w === 'number') { w = w.toFixed(); }
 
-      return Object.assign(Object.create(null), { x, y, z, w });
+      return Object.assign(Object.create(null), { x: x, y: y, z: z, w: w });
     }
-  }
-});
+  }, obj ));
 
-let gl;
+var gl;
 
 class Engine {
   constructor(ctx) {
@@ -163,7 +181,7 @@ class Engine {
   }
 
   createBuffer(type, data, usage) {
-    const buffer = gl.createBuffer();
+    var buffer = gl.createBuffer();
 
     console.log(buffer);
 
@@ -174,8 +192,13 @@ class Engine {
     return buffer;
   }
 
-  createAttribute(program, bufferType, buffer, variable, size, type = gl.FLOAT, normalized = false, stride = 0, offset = 0) {
-    const attributeLocation = gl.getAttribLocation(program, variable);
+  createAttribute(program, bufferType, buffer, variable, size, type, normalized, stride, offset) {
+    if ( type === void 0 ) type = gl.FLOAT;
+    if ( normalized === void 0 ) normalized = false;
+    if ( stride === void 0 ) stride = 0;
+    if ( offset === void 0 ) offset = 0;
+
+    var attributeLocation = gl.getAttribLocation(program, variable);
 
     gl.enableVertexAttribArray(attributeLocation);
 
@@ -195,9 +218,9 @@ class Engine {
 
     var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
 
-    if (success) return shader;
+    if (success) { return shader; }
 
-    const info = gl.getShaderInfoLog(shader);
+    var info = gl.getShaderInfoLog(shader);
 
     console.warn(info);
 
@@ -207,7 +230,7 @@ class Engine {
   }
 
   createProgram(vertexShader, fragmentShader) {
-    const program = gl.createProgram();
+    var program = gl.createProgram();
 
     gl.attachShader(program, vertexShader);
 
@@ -219,7 +242,7 @@ class Engine {
   linkProgram(program) {
     gl.linkProgram(program);
 
-    const success = gl.getProgramParameter(program, gl.LINK_STATUS);
+    var success = gl.getProgramParameter(program, gl.LINK_STATUS);
 
     if (success) {
       gl.useProgram(program);
@@ -227,7 +250,7 @@ class Engine {
       return program;
     }
 
-    const info = gl.getProgramInfoLog(program);
+    var info = gl.getProgramInfoLog(program);
 
     console.warn(info);
 
