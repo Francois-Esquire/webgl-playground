@@ -15,7 +15,7 @@ const plugins = {
 };
 
 const triangles = {
-  input: "src/index.js",
+  input: "src/program.js",
   output: { format: "iife", file: "public/program.js" },
   plugins: [plugins.glsl],
 };
