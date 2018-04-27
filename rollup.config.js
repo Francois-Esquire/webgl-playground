@@ -6,6 +6,7 @@ const plugins = {
     transforms: {
       forOf: false,
     },
+    objectAssign: 'Object.assign',
   }),
   glsl: glsl({
     include: "src/**/*.glsl",
@@ -15,13 +16,17 @@ const plugins = {
 const triangles = {
   input: "src/triangle/index.js",
   output: { format: "iife", file: "public/app.js", name: "triangles" },
-  plugins: [plugins.glsl]
+  plugins: [plugins.glsl],
 };
 
 const gl = {
   input: "lib/index.js",
-  output: { format: "es", file: "dist/gl.js", name: "gl" },
-  plugins: [plugins.buble]
+  output: [
+    { format: "umd", file: "dist/gl.umd.js", name: "gl" },
+    { format: "cjs", file: "dist/gl.js", name: "gl" },
+    { format: "es", file: "dist/gl.es.js", name: "gl" },
+  ],
+  // plugins: [plugins.buble],
 };
 
 export default [gl, triangles];

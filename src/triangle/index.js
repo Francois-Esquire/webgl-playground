@@ -1,28 +1,33 @@
-import { Vector, Engine } from '../../dist/gl';
+import { Vector, Engine } from '../../lib/index';
 
 import fragmentShaderSource from "../shaders/triangle.fragment.glsl";
 import vertexShaderSource from "../shaders/triangle.vertex.glsl";
 
 let gl;
 
-document.addEventListener("DOMContentLoaded", function loaded() {
-  const canvas = document.getElementById('c');
+(function start(config) {
+  // TODO:
+  // check compatability / support.
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  document.addEventListener("DOMContentLoaded", function loaded() {
+    const canvas = document.getElementById('c');
 
-  window.addEventListener("resize", function onresize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    window.addEventListener("resize", function onresize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+    });
+
+    gl = canvas.getContext('webgl2');
+
+    if (config.lib) lib();
+    else triangle();
   });
-
-  gl = canvas.getContext('webgl2');
-
-  lib();
-  // triangle();
-});
+})({ lib: true });
 
 function lib() {
   const egl = new Engine(gl);
@@ -35,13 +40,13 @@ function lib() {
     FRAGMENT_SHADER,
   } = gl;
 
-  const vec_01 = new Vector(  1.0, -1.0, 0.0 );
-  const vec_02 = new Vector(  0.0,  1.0, 0.0 );
-  const vec_03 = new Vector( -1.0, -1.0, 0.0 );
+  let vec_01 = new Vector(  1.0, -1.0, 0.0 );
+  let vec_02 = new Vector(  0.0,  1.0, 0.0 );
+  let vec_03 = new Vector( -1.0, -1.0, 0.0 );
 
-  const color_01 = new Vector( 1.0, 0.0, 0.0, 1.0 );
-  const color_02 = new Vector( 0.0, 1.0, 0.0, 1.0 );
-  const color_03 = new Vector( 0.0, 0.0, 1.0, 1.0 );
+  let color_01 = new Vector( 1.0, 0.0, 0.0, 1.0 );
+  let color_02 = new Vector( 0.0, 1.0, 0.0, 1.0 );
+  let color_03 = new Vector( 0.0, 0.0, 1.0, 1.0 );
 
   const vertices = new Float32Array([...vec_01, ...vec_02, ...vec_03]);
 
