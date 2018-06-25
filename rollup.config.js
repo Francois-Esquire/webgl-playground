@@ -14,9 +14,17 @@ const plugins = {
   })
 };
 
-const triangles = {
+const program = {
   input: "src/program.js",
-  output: { format: "iife", file: "public/program.js", interop: false },
+  external: ["three"],
+  output: {
+    format: "iife",
+    file: "public/program.js",
+    interop: false,
+    globals: {
+      three: "THREE"
+    }
+  },
   plugins: [plugins.glsl]
 };
 
@@ -30,4 +38,4 @@ const gl = {
   plugins: [plugins.buble]
 };
 
-export default [gl, triangles];
+export default [gl, program];
