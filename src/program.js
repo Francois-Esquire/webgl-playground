@@ -1,1 +1,1 @@
-import './triangle/index';
+import "./penrose/main";

@@ -6,17 +6,35 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 
-app.use(express.static("public"));
+app
+  .use(express.static("public"))
+  .get("/js/three.js", (request, response) => {
+    response.type("javascript");
 
-app.get("/*", (request, response) => {
-  const html = fs.createReadStream("public/index.htm");
+    const three = fs.createReadStream("node_modules/three/build/three.min.js");
 
-  html.on("end", () => {
-    response.end("", 200);
+    three.pipe(response).on("end", () => response.status(200).end());
+  })
+  .get("/*", (request, response) => {
+    response.type("html");
+
+    const html = fs.createReadStream("public/index.htm");
+
+    html
+      .on("error", error => {
+        response.status(500);
+
+        console.log("Error:", error.message);
+
+        // respond to error the proper way.
+        if (response.headersSent) reponse.end();
+        else response.status(500).end();
+      })
+      .on("end", () => {
+        response.status(200).end();
+      })
+      .pipe(response);
   });
-
-  html.pipe(response);
-});
 
 app.listen(port, error => {
   if (error) console.log(error);

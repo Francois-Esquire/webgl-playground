@@ -1,7 +1,7 @@
-import { Vector, Engine } from '../../lib/index';
+import { Vector, Engine } from "../../lib/index";
 
-import fragmentShaderSource from "../shaders/triangle.fragment.glsl";
-import vertexShaderSource from "../shaders/triangle.vertex.glsl";
+import fragmentShaderSource from "./shaders/fragment.glsl";
+import vertexShaderSource from "./shaders/vertex.glsl";
 
 let gl;
 
@@ -10,7 +10,7 @@ let gl;
   // check compatability / support.
 
   document.addEventListener("DOMContentLoaded", function loaded() {
-    const canvas = document.getElementById('c');
+    const canvas = document.getElementById("c");
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -22,7 +22,7 @@ let gl;
       if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
     });
 
-    gl = canvas.getContext('webgl2');
+    gl = canvas.getContext("webgl2");
 
     if (config.lib) lib();
     else triangle();
@@ -37,33 +37,58 @@ function lib() {
     STATIC_DRAW,
     ARRAY_BUFFER,
     VERTEX_SHADER,
-    FRAGMENT_SHADER,
+    FRAGMENT_SHADER
   } = gl;
 
-  let vec_01 = new Vector(  1.0, -1.0, 0.0 );
-  let vec_02 = new Vector(  0.0,  1.0, 0.0 );
-  let vec_03 = new Vector( -1.0, -1.0, 0.0 );
+  let vec_01 = new Vector(1.0, -1.0, 0.0);
+  let vec_02 = new Vector(0.0, 1.0, 0.0);
+  let vec_03 = new Vector(-1.0, -1.0, 0.0);
 
-  let color_01 = new Vector( 1.0, 0.0, 0.0, 1.0 );
-  let color_02 = new Vector( 0.0, 1.0, 0.0, 1.0 );
-  let color_03 = new Vector( 0.0, 0.0, 1.0, 1.0 );
+  let color_01 = new Vector(1.0, 0.0, 0.0, 1.0);
+  let color_02 = new Vector(0.0, 1.0, 0.0, 1.0);
+  let color_03 = new Vector(0.0, 0.0, 1.0, 1.0);
 
   const vertices = new Float32Array([...vec_01, ...vec_02, ...vec_03]);
 
   const colors = new Float32Array([...color_01, ...color_02, ...color_03]);
 
-  const triangleVerticesBuffer = egl.createBuffer(ARRAY_BUFFER,  vertices, STATIC_DRAW);
+  const triangleVerticesBuffer = egl.createBuffer(
+    ARRAY_BUFFER,
+    vertices,
+    STATIC_DRAW
+  );
 
-  const triangleColorsBuffer = egl.createBuffer(ARRAY_BUFFER,  colors, STATIC_DRAW);
+  const triangleColorsBuffer = egl.createBuffer(
+    ARRAY_BUFFER,
+    colors,
+    STATIC_DRAW
+  );
 
   const vertexShader = egl.createShader(VERTEX_SHADER, vertexShaderSource);
 
-  const fragmentShader = egl.createShader(FRAGMENT_SHADER, fragmentShaderSource);
+  const fragmentShader = egl.createShader(
+    FRAGMENT_SHADER,
+    fragmentShaderSource
+  );
 
   const shaderProgram = egl.createProgram(vertexShader, fragmentShader);
 
-  egl.createAttribute(shaderProgram, ARRAY_BUFFER, triangleVerticesBuffer, "position", 3, FLOAT);
-  egl.createAttribute(shaderProgram, ARRAY_BUFFER, triangleColorsBuffer, "color", 4, FLOAT);
+  egl.createAttribute(
+    shaderProgram,
+    ARRAY_BUFFER,
+    triangleVerticesBuffer,
+    "position",
+    3,
+    FLOAT
+  );
+  egl.createAttribute(
+    shaderProgram,
+    ARRAY_BUFFER,
+    triangleColorsBuffer,
+    "color",
+    4,
+    FLOAT
+  );
 
   egl.run();
 }
@@ -138,6 +163,7 @@ function triangle() {
     shaderProgram,
     "color"
   );
+
   gl.bindBuffer(gl.ARRAY_BUFFER, triangleColorsBuffer);
   gl.vertexAttribPointer(colorAttributeLocation, 4, gl.FLOAT, false, 0, 0);
 

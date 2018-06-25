@@ -5,29 +5,29 @@ const plugins = {
   buble: buble({
     transforms: {
       classes: false,
-      forOf: false,
+      forOf: false
     },
-    objectAssign: 'Object.assign',
+    objectAssign: "Object.assign"
   }),
   glsl: glsl({
-    include: "src/**/*.glsl",
-  }),
+    include: "src/**/*.glsl"
+  })
 };
 
 const triangles = {
   input: "src/program.js",
-  output: { format: "iife", file: "public/program.js" },
-  plugins: [plugins.glsl],
+  output: { format: "iife", file: "public/program.js", interop: false },
+  plugins: [plugins.glsl]
 };
 
 const gl = {
   input: "lib/index.js",
   output: [
-    { format: "umd", file: "dist/gl.umd.js", name: 'gl' },
+    { format: "umd", file: "dist/gl.umd.js", name: "gl" },
     { format: "cjs", file: "dist/gl.js" },
-    { format: "es", file: "dist/gl.es.js" },
+    { format: "es", file: "dist/gl.es.js" }
   ],
-  plugins: [plugins.buble],
+  plugins: [plugins.buble]
 };
 
 export default [gl, triangles];
