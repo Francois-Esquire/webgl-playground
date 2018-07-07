@@ -8,6 +8,7 @@ const app = express();
 
 app
   .use(express.static("public"))
+  .use("/assets", express.static("assets"))
   .get("/js/three.js", (request, response) => {
     response.type("javascript");
 

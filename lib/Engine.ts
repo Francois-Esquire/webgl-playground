@@ -1,7 +1,7 @@
-export let gl;
+export let gl: WebGLRenderingContext;
 
 export default class Engine {
-  constructor(ctx) {
+  constructor(ctx: WebGLRenderingContext) {
     gl = ctx;
 
     this.run = this.run.bind(this);
@@ -36,7 +36,17 @@ export default class Engine {
     return buffer;
   }
 
-  createAttribute(program, bufferType, buffer, variable, size, type = gl.FLOAT, normalized = false, stride = 0, offset = 0) {
+  createAttribute(
+    program,
+    bufferType,
+    buffer,
+    variable,
+    size,
+    type = gl.FLOAT,
+    normalized = false,
+    stride = 0,
+    offset = 0
+  ) {
     const attributeLocation = gl.getAttribLocation(program, variable);
 
     gl.enableVertexAttribArray(attributeLocation);
@@ -44,7 +54,14 @@ export default class Engine {
     gl.bindBuffer(bufferType, buffer);
 
     // gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
-    gl.vertexAttribPointer(attributeLocation, size, type, normalized, stride, offset);
+    gl.vertexAttribPointer(
+      attributeLocation,
+      size,
+      type,
+      normalized,
+      stride,
+      offset
+    );
 
     return attributeLocation;
   }

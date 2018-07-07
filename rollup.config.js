@@ -1,5 +1,8 @@
 import buble from "rollup-plugin-buble";
 import glsl from "rollup-plugin-glsl";
+import ts from "rollup-plugin-typescript";
+
+import typescript from "typescript";
 
 const plugins = {
   buble: buble({
@@ -11,6 +14,9 @@ const plugins = {
   }),
   glsl: glsl({
     include: "src/**/*.glsl"
+  }),
+  ts: ts({
+    typescript
   })
 };
 
@@ -29,13 +35,13 @@ const program = {
 };
 
 const gl = {
-  input: "lib/index.js",
+  input: "lib/index.ts",
   output: [
     { format: "umd", file: "dist/gl.umd.js", name: "gl" },
     { format: "cjs", file: "dist/gl.js" },
     { format: "es", file: "dist/gl.es.js" }
   ],
-  plugins: [plugins.buble]
+  plugins: [plugins.ts, plugins.buble]
 };
 
 export default [gl, program];
