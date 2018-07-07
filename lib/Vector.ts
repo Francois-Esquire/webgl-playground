@@ -1,5 +1,3 @@
-const _instances = new WeakSet();
-
 interface Point {
   x: number;
   y: number;
@@ -8,28 +6,30 @@ interface Point {
 }
 
 export default class Vector implements Point {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
+  public x: number = 0.0;
+  public y: number = 0.0;
+  public z: number;
+  public w: number;
 
-  constructor(...args: any[]) {
-    const { x, y, z, w } = Vector.input(...args);
+  protected static _instances = new WeakSet();
+
+  constructor(...args: Array<any>) {
+    const { x, y, z, w } = Vector._input(...args);
 
     if (x) this.x = x;
     if (y) this.y = y;
     if (z) this.z = z;
     if (w) this.w = w;
 
-    _instances.add(this);
+    Vector._instances.add(this);
   }
 
   public clone(): Vector {
     return new Vector(this);
   }
 
-  public translate(...args: any[]): Vector {
-    const { x, y, z, w } = Vector.input(...args);
+  public translate(...args: Array<any>): Vector {
+    const { x, y, z, w } = Vector._input(...args);
 
     if (x) this.x = x;
     if (y) this.y = y;
@@ -39,28 +39,28 @@ export default class Vector implements Point {
     return this;
   }
 
-  private get array(): number[] {
+  public get length(): number {
+    return this._array.length;
+  }
+
+  private get _array(): Array<number> {
     return Array.from(this);
   }
 
-  get length(): number {
-    return this.array.length;
-  }
-
-  static create(vector: any): Vector {
+  public static create(vector: any): Vector {
     return vector instanceof Vector ? vector.clone() : new Vector(vector);
   }
 
-  static delete(ref: Vector) {
-    _instances.delete(ref);
+  public static delete(ref: Vector): void {
+    Vector._instances.delete(ref);
   }
 
-  private static input(...args: any[]): Point {
+  private static _input(...args: Array<any>): Point {
     const transform = (args.length > 1 ? args : args[0]) || {};
 
-    let { x, y, z, w } =
+    let { x, y, z, w }: Point =
       transform instanceof Array
-        ? transform.reduce((map, t, i) => {
+        ? transform.reduce((map, t, i): Point => {
             Object.assign(map, {
               [String.fromCharCode(119 + (i === 3 ? 0 : i + 1))]: t
             });
@@ -69,10 +69,8 @@ export default class Vector implements Point {
           }, {})
         : transform;
 
-    x = typeof x === "number" ? x.toFixed() : 0.0;
-    y = typeof y === "number" ? y.toFixed() : 0.0;
-    if (typeof z === "number") z = z.toFixed();
-    if (typeof w === "number") w = w.toFixed();
+    x = typeof x === "number" ? x : 0.0;
+    y = typeof y === "number" ? y : 0.0;
 
     return Object.assign(Object.create(null), {
       x,
@@ -84,7 +82,7 @@ export default class Vector implements Point {
 
   [Symbol.iterator]() {
     return {
-      points: (function _toArray(vec: Vector) {
+      points: (function _toArray(vec: Vector): Array<number> {
         const { x, y, z, w } = vec;
 
         return [x, y].concat(z || (w ? undefined : []), w || []);
@@ -95,7 +93,7 @@ export default class Vector implements Point {
     };
   }
 
-  [Symbol.toPrimitive](hint: string) {
+  [Symbol.toPrimitive](hint: string): Error | number {
     switch (hint) {
       default:
         throw new Error();
@@ -104,11 +102,11 @@ export default class Vector implements Point {
     }
   }
 
-  get [Symbol.toStringTag]() {
+  get [Symbol.toStringTag](): string {
     return `Vector${this.length}`;
   }
 
-  static [Symbol.hasInstance](instance: any) {
-    return _instances.has(instance);
+  static [Symbol.hasInstance](instance: any): boolean {
+    return Vector._instances.has(instance);
   }
 }

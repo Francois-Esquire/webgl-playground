@@ -10,7 +10,6 @@
         return Matrix;
     }());
 
-    var _instances = new WeakSet();
     var Vector = /** @class */ (function () {
         function Vector() {
             var arguments$1 = arguments;
@@ -19,7 +18,9 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments$1[_i];
             }
-            var _a = Vector.input.apply(Vector, args), x = _a.x, y = _a.y, z = _a.z, w = _a.w;
+            this.x = 0.0;
+            this.y = 0.0;
+            var _a = Vector._input.apply(Vector, args), x = _a.x, y = _a.y, z = _a.z, w = _a.w;
             if (x)
                 { this.x = x; }
             if (y)
@@ -28,7 +29,7 @@
                 { this.z = z; }
             if (w)
                 { this.w = w; }
-            _instances.add(this);
+            Vector._instances.add(this);
         }
         Vector.prototype.clone = function () {
             return new Vector(this);
@@ -40,7 +41,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments$1[_i];
             }
-            var _a = Vector.input.apply(Vector, args), x = _a.x, y = _a.y, z = _a.z, w = _a.w;
+            var _a = Vector._input.apply(Vector, args), x = _a.x, y = _a.y, z = _a.z, w = _a.w;
             if (x)
                 { this.x = x; }
             if (y)
@@ -51,16 +52,16 @@
                 { this.w = w; }
             return this;
         };
-        Object.defineProperty(Vector.prototype, "array", {
+        Object.defineProperty(Vector.prototype, "length", {
             get: function () {
-                return Array.from(this);
+                return this._array.length;
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Vector.prototype, "length", {
+        Object.defineProperty(Vector.prototype, "_array", {
             get: function () {
-                return this.array.length;
+                return Array.from(this);
             },
             enumerable: true,
             configurable: true
@@ -69,9 +70,9 @@
             return vector instanceof Vector ? vector.clone() : new Vector(vector);
         };
         Vector.delete = function (ref) {
-            _instances.delete(ref);
+            Vector._instances.delete(ref);
         };
-        Vector.input = function () {
+        Vector._input = function () {
             var arguments$1 = arguments;
 
             var args = [];
@@ -88,12 +89,8 @@
                     return map;
                 }, {})
                 : transform, x = _a.x, y = _a.y, z = _a.z, w = _a.w;
-            x = typeof x === "number" ? x.toFixed() : 0.0;
-            y = typeof y === "number" ? y.toFixed() : 0.0;
-            if (typeof z === "number")
-                { z = z.toFixed(); }
-            if (typeof w === "number")
-                { w = w.toFixed(); }
+            x = typeof x === "number" ? x : 0.0;
+            y = typeof y === "number" ? y : 0.0;
             return Object.assign(Object.create(null), {
                 x: x,
                 y: y,
@@ -128,8 +125,9 @@
             configurable: true
         });
         Vector[Symbol.hasInstance] = function (instance) {
-            return _instances.has(instance);
+            return Vector._instances.has(instance);
         };
+        Vector._instances = new WeakSet();
         return Vector;
     }());
 
