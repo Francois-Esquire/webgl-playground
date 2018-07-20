@@ -15,6 +15,8 @@ Create a new directory in src/ and add the metadata to the `src/xp.json`. On you
 
 Repeat.
 
-To visit your experiment, click on the image tile.
+To visit your experiment, click on the image tile in the browser.
+
+Preview:
 
 ![Home Page](public/images/home.png)
