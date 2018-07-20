@@ -16,10 +16,10 @@ export default class Vector implements Point {
   constructor(...args: Array<any>) {
     const { x, y, z, w } = Vector._input(...args);
 
-    if (x) this.x = x;
-    if (y) this.y = y;
-    if (z) this.z = z;
-    if (w) this.w = w;
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.w = w;
 
     Vector._instances.add(this);
   }
@@ -31,10 +31,10 @@ export default class Vector implements Point {
   public translate(...args: Array<any>): Vector {
     const { x, y, z, w } = Vector._input(...args);
 
-    if (x) this.x = x;
-    if (y) this.y = y;
-    if (z) this.z = z;
-    if (w) this.w = w;
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.w = w;
 
     return this;
   }
@@ -58,7 +58,7 @@ export default class Vector implements Point {
   private static _input(...args: Array<any>): Point {
     const transform = (args.length > 1 ? args : args[0]) || {};
 
-    let { x, y, z, w }: Point =
+    const { x, y, z, w }: Point =
       transform instanceof Array
         ? transform.reduce((map, t, i): Point => {
             Object.assign(map, {
@@ -68,9 +68,6 @@ export default class Vector implements Point {
             return map;
           }, {})
         : transform;
-
-    x = typeof x === "number" ? x : 0.0;
-    y = typeof y === "number" ? y : 0.0;
 
     return Object.assign(Object.create(null), {
       x,
@@ -85,7 +82,10 @@ export default class Vector implements Point {
       points: (function _toArray(vec: Vector): Array<number> {
         const { x, y, z, w } = vec;
 
-        return [x, y].concat(z || (w ? undefined : []), w || []);
+        return [x, y].concat(
+          typeof z === "number" ? z : typeof w === "number" ? undefined : [],
+          typeof w === "number" ? w : []
+        );
       })(this),
       next() {
         return { done: this.points.length === 0, value: this.points.shift() };
@@ -106,7 +106,7 @@ export default class Vector implements Point {
     return `Vector${this.length}`;
   }
 
-  static [Symbol.hasInstance](instance: any): boolean {
-    return Vector._instances.has(instance);
-  }
+  // static [Symbol.hasInstance](instance: any): boolean {
+  //   return Vector._instances.has(instance);
+  // }
 }

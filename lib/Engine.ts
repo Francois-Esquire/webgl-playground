@@ -27,8 +27,6 @@ export default class Engine {
   createBuffer(type, data, usage) {
     const buffer = gl.createBuffer();
 
-    console.log(buffer);
-
     gl.bindBuffer(type, buffer);
 
     gl.bufferData(type, data, usage || gl.STATIC_DRAW);

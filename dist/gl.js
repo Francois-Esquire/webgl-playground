@@ -19,14 +19,10 @@ var Vector = /** @class */ (function () {
         this.x = 0.0;
         this.y = 0.0;
         var _a = Vector._input.apply(Vector, args), x = _a.x, y = _a.y, z = _a.z, w = _a.w;
-        if (x)
-            { this.x = x; }
-        if (y)
-            { this.y = y; }
-        if (z)
-            { this.z = z; }
-        if (w)
-            { this.w = w; }
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
         Vector._instances.add(this);
     }
     Vector.prototype.clone = function () {
@@ -40,14 +36,10 @@ var Vector = /** @class */ (function () {
             args[_i] = arguments$1[_i];
         }
         var _a = Vector._input.apply(Vector, args), x = _a.x, y = _a.y, z = _a.z, w = _a.w;
-        if (x)
-            { this.x = x; }
-        if (y)
-            { this.y = y; }
-        if (z)
-            { this.z = z; }
-        if (w)
-            { this.w = w; }
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
         return this;
     };
     Object.defineProperty(Vector.prototype, "length", {
@@ -87,8 +79,6 @@ var Vector = /** @class */ (function () {
                 return map;
             }, {})
             : transform, x = _a.x, y = _a.y, z = _a.z, w = _a.w;
-        x = typeof x === "number" ? x : 0.0;
-        y = typeof y === "number" ? y : 0.0;
         return Object.assign(Object.create(null), {
             x: x,
             y: y,
@@ -100,7 +90,7 @@ var Vector = /** @class */ (function () {
         return {
             points: (function _toArray(vec) {
                 var x = vec.x, y = vec.y, z = vec.z, w = vec.w;
-                return [x, y].concat(z || (w ? undefined : []), w || []);
+                return [x, y].concat(typeof z === "number" ? z : typeof w === "number" ? undefined : [], typeof w === "number" ? w : []);
             })(this),
             next: function () {
                 return { done: this.points.length === 0, value: this.points.shift() };
@@ -122,9 +112,6 @@ var Vector = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Vector[Symbol.hasInstance] = function (instance) {
-        return Vector._instances.has(instance);
-    };
     Vector._instances = new WeakSet();
     return Vector;
 }());
@@ -156,7 +143,6 @@ var Engine = /** @class */ (function () {
     };
     Engine.prototype.createBuffer = function (type, data, usage) {
         var buffer = exports.gl.createBuffer();
-        console.log(buffer);
         exports.gl.bindBuffer(type, buffer);
         exports.gl.bufferData(type, data, usage || exports.gl.STATIC_DRAW);
         return buffer;
