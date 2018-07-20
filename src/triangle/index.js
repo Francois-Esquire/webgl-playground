@@ -1,4 +1,4 @@
-import { Vector, Engine } from "../../lib/index";
+import { Vector, Engine } from "../../dist/gl.es";
 
 import fragmentShaderSource from "./shaders/fragment.glsl";
 import vertexShaderSource from "./shaders/vertex.glsl";
@@ -10,10 +10,12 @@ let gl;
   // check compatability / support.
 
   document.addEventListener("DOMContentLoaded", function loaded() {
-    const canvas = document.getElementById("c");
+    const canvas = document.createElement("canvas");
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+    document.body.prepend(canvas);
 
     window.addEventListener("resize", function onresize() {
       canvas.width = window.innerWidth;
