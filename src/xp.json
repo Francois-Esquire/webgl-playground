@@ -1,0 +1,28 @@
+{
+  "experiments": [
+    {
+      "title": "Triangle",
+      "description": "First Play With Shaders",
+      "path": "/triangle",
+      "src": "src/triangle/index.js",
+      "file": "public/js/triangle.js",
+      "assets": []
+    },
+    {
+      "title": "Strung",
+      "description": "Pluck The String",
+      "path": "/strung",
+      "src": "src/strung/index.js",
+      "file": "public/js/strung.js",
+      "assets": []
+    },
+    {
+      "title": "Penrose",
+      "description": "Find The Way Out",
+      "path": "/penrose",
+      "src": "src/penrose/index.js",
+      "file": "public/js/penrose.js",
+      "assets": []
+    }
+  ]
+}
