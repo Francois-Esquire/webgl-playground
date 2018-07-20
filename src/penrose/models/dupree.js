@@ -1,4 +1,4 @@
-import THREE from "three";
+import * as THREE from "three";
 
 export default class Dupree {
   static PLAYER_MOVE = "player.move";

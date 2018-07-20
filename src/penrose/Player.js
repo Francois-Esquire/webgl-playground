@@ -1,21 +1,24 @@
-import THREE from "three";
+import { EventDispatcher } from "three/src/core/EventDispatcher";
+import { MeshPhysicalMaterial } from "three/src/materials/MeshPhysicalMaterial";
+import { SphereGeometry } from "three/src/geometries/SphereGeometry";
+import { Mesh } from "three/src/objects/Mesh";
 
 export default class Player {
   constructor(program, position) {
     this.program = program;
 
-    this.events = new THREE.EventDispatcher();
+    this.events = new EventDispatcher();
 
-    const material = new THREE.MeshPhysicalMaterial({
+    const material = new MeshPhysicalMaterial({
       color: 0xff3322,
       roughness: 0.75,
       metalness: 0.0625,
       clearCoat: 0.27
     });
 
-    const geometry = new THREE.SphereGeometry(5, 100, 100);
+    const geometry = new SphereGeometry(5, 100, 100);
 
-    this.changeMesh(new THREE.Mesh(geometry, material), position);
+    this.changeMesh(new Mesh(geometry, material), position);
 
     this.init(position);
   }
@@ -42,7 +45,7 @@ export default class Player {
   }
 
   move(raycast) {
-    console.log(raycast, this.mesh.position);
+    console.log(raycast, raycast.object.position, this.mesh.position);
 
     this.changePosition(raycast.object.position);
 
@@ -67,15 +70,13 @@ export default class Player {
     const { x, y, z } = position;
 
     // interpolate from current position - add animation.
-    if (x) this.mesh.position.x = x;
-    if (y) this.mesh.position.y = y;
-    if (z) this.mesh.position.z = z;
+    this.mesh.position.set(x, y, z);
   }
 
   loadBunny(position) {
     this.program.loadObj("assets/bunny.obj").then(object => {
       object.traverse(child => {
-        if (child instanceof THREE.Mesh) {
+        if (child instanceof Mesh) {
           const scale = 4;
 
           child.scale.set(scale, scale, scale);

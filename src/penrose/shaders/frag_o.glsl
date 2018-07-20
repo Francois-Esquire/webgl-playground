@@ -7,7 +7,7 @@ uniform vec2 u_mouse;
 uniform float u_time;
 
 void main() {
-    vec2 mouse = clamp(u_mouse, vec2(-0.010,0.020), u_resolution);
+    vec2 mouse = clamp(u_mouse, vec2(-0.010, 0.020), u_resolution);
     
 	vec2 st = gl_FragCoord.xy/u_resolution;
     vec2 mt = vec2(
