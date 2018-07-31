@@ -9,6 +9,15 @@ var express = _interopDefault(require('express'));
 
 var experiments = [
 	{
+		title: "Home",
+		description: "XP Lab Gallery",
+		path: "/",
+		src: "src/home.js",
+		file: "public/js/home.js",
+		assets: [
+		]
+	},
+	{
 		title: "Triangle",
 		description: "First Play With Shaders",
 		path: "/triangle",
@@ -59,6 +68,7 @@ Markup.prototype.render = function render (path) {
 
   if (this.cache.has(path)) {
     transform.write(this.cache.get(path));
+
     return transform;
   }
 
@@ -94,9 +104,7 @@ Markup.prototype.render = function render (path) {
           React.createElement( 'p', null, "Please Enable Javascript" )
         ),
 
-        exp.file ? (
-          React.createElement( 'script', { src: exp.file.replace("public/", "") })
-        ) : (
+        exp.path === "/" && (
           React.createElement( 'main', { className: "gallery" },
             React.createElement( 'header', { className: "intro" },
               React.createElement( 'h1', null, "XP" ),
@@ -104,28 +112,32 @@ Markup.prototype.render = function render (path) {
             ),
 
             React.createElement( 'div', { className: "container" },
-              Array.from(this.experiments.values()).map(function (xp$$1) { return (
-                React.createElement( 'a', {
-                  key: xp$$1.title, href: ("/" + (xp$$1.title.toLowerCase())), className: "link" },
-                  React.createElement( 'section', { className: "experiment" },
-                    React.createElement( 'header', { className: "title" },
-                      React.createElement( 'h2', null, xp$$1.title )
-                    ),
+              Array.from(this.experiments.values()).map(
+                function (xp$$1) { return xp$$1.path !== "/" && (
+                    React.createElement( 'a', {
+                      key: xp$$1.title, href: ("/" + (xp$$1.title.toLowerCase())), className: "link" },
+                      React.createElement( 'section', { className: "experiment" },
+                        React.createElement( 'header', { className: "title" },
+                          React.createElement( 'h2', null, xp$$1.title )
+                        ),
 
-                    React.createElement( 'div', { className: "preview" },
-                      React.createElement( 'img', {
-                        src: ("images/" + (xp$$1.title.toLowerCase()) + ".png"), alt: xp$$1.title })
-                    ),
+                        React.createElement( 'div', { className: "preview" },
+                          React.createElement( 'img', {
+                            src: ("images/" + (xp$$1.title.toLowerCase()) + ".png"), alt: xp$$1.title })
+                        ),
 
-                    React.createElement( 'footer', { className: "description" },
-                      React.createElement( 'p', null, xp$$1.description )
+                        React.createElement( 'footer', { className: "description" },
+                          React.createElement( 'p', null, xp$$1.description )
+                        )
+                      )
                     )
-                  )
-                )
-              ); })
+                  ); }
+              )
             )
           )
-        )
+        ),
+
+        React.createElement( 'script', { src: (exp.file || "").replace("public/", "") })
       )
     )
   );
