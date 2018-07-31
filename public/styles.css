@@ -42,21 +42,24 @@ p {
 }
 
 .intro {
+  display: flex;
+  flex-flow: row wrap;
   width: 100%;
   margin: 16px;
+  margin-bottom: 20vh;
 }
 
 .intro h1,
 .intro p {
   height: 80px;
-  margin: 1em;
+  padding: 1em;
   color: black;
   font-size: 24px;
 }
 
 .intro h1 {
   font-size: 32px;
-  margin: 24px;
+  padding: 24px;
 }
 
 .link {

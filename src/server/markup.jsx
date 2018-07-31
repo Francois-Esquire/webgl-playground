@@ -63,9 +63,7 @@ class Markup {
             <p>Please Enable Javascript</p>
           </noscript>
 
-          {exp.file ? (
-            <script src={exp.file.replace("public/", "")} />
-          ) : (
+          {exp.path === "/" && (
             <main className="gallery">
               <header className="intro">
                 <h1>XP</h1>
@@ -73,33 +71,38 @@ class Markup {
               </header>
 
               <div className="container">
-                {Array.from(this.experiments.values()).map(xp => (
-                  <a
-                    key={xp.title}
-                    href={`/${xp.title.toLowerCase()}`}
-                    className="link"
-                  >
-                    <section className="experiment">
-                      <header className="title">
-                        <h2>{xp.title}</h2>
-                      </header>
+                {Array.from(this.experiments.values()).map(
+                  xp =>
+                    xp.path !== "/" && (
+                      <a
+                        key={xp.title}
+                        href={`/${xp.title.toLowerCase()}`}
+                        className="link"
+                      >
+                        <section className="experiment">
+                          <header className="title">
+                            <h2>{xp.title}</h2>
+                          </header>
 
-                      <div className="preview">
-                        <img
-                          src={`images/${xp.title.toLowerCase()}.png`}
-                          alt={xp.title}
-                        />
-                      </div>
+                          <div className="preview">
+                            <img
+                              src={`images/${xp.title.toLowerCase()}.png`}
+                              alt={xp.title}
+                            />
+                          </div>
 
-                      <footer className="description">
-                        <p>{xp.description}</p>
-                      </footer>
-                    </section>
-                  </a>
-                ))}
+                          <footer className="description">
+                            <p>{xp.description}</p>
+                          </footer>
+                        </section>
+                      </a>
+                    )
+                )}
               </div>
             </main>
           )}
+
+          <script src={exp.file.replace("public/", "")} />
         </body>
       </html>
     );

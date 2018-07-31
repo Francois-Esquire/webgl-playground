@@ -1,6 +1,14 @@
 {
   "experiments": [
     {
+      "title": "XP Lab",
+      "description": "First Play With Shaders",
+      "path": "/",
+      "src": "src/home.js",
+      "file": "public/js/home.js",
+      "assets": []
+    },
+    {
       "title": "Triangle",
       "description": "First Play With Shaders",
       "path": "/triangle",
