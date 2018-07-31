@@ -1,8 +1,8 @@
 {
   "experiments": [
     {
-      "title": "XP Lab",
-      "description": "First Play With Shaders",
+      "title": "Home",
+      "description": "XP Lab Gallery",
       "path": "/",
       "src": "src/home.js",
       "file": "public/js/home.js",
