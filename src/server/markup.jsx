@@ -102,7 +102,7 @@ class Markup {
             </main>
           )}
 
-          <script src={exp.file.replace("public/", "")} />
+          <script src={(exp.file || "").replace("public/", "")} />
         </body>
       </html>
     );
