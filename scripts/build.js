@@ -10,11 +10,13 @@ const exec = (cmd, env = {}) =>
 (async () => {
   exec("rollup -c", { NODE_ENV: "production" });
 
-  if (true) {
+  const renderPages = true;
+
+  if (renderPages) {
     const xp = require("../src/xp.json");
     const app = require("../app");
 
-    const port = 3000;
+    const port = 9898;
 
     const server = app.listen(port, async err => {
       if (err) console.log(err);
@@ -24,14 +26,46 @@ const exec = (cmd, env = {}) =>
         console.log(loc);
 
         try {
+          const puppeteer = require("puppeteer");
+          const devices = require("puppeteer/DeviceDescriptors");
+          const iPad = devices["iPad Pro landscape"];
+
+          const browser = await puppeteer.launch({
+            headless: !true,
+            args: ["--disable-extensions"],
+            dumpio: true
+          });
+
+          async function generateGalleryStills(url, name) {
+            const page = await browser.newPage();
+
+            await page.emulate(iPad);
+
+            await page.goto(url, { waitUntil: "domcontentloaded" });
+
+            const clip = await page.evaluate(_ => ({
+              x: 0,
+              y: 0,
+              width: document.body.scrollWidth,
+              height: document.body.scrollHeight
+            }));
+
+            await page.screenshot({
+              path: `public/images/${name}.png`,
+              clip
+            });
+
+            await page.close();
+          }
+
           await Promise.all(
             xp.experiments.map(async exp => {
               const name = exp.title.toLowerCase();
-              await generateGalleryStills(`${loc}/${name}`, name);
+              await generateGalleryStills(`${loc}${exp.path}`, name);
             })
           );
 
-          await await generateGalleryStills(`${loc}/`, "home");
+          await browser.close();
         } catch (e) {
           console.log(e);
         }
@@ -41,44 +75,3 @@ const exec = (cmd, env = {}) =>
     });
   }
 })();
-
-async function generateGalleryStills(url, name) {
-  const puppeteer = require("puppeteer");
-  const devices = require("puppeteer/DeviceDescriptors");
-  const iPad = devices["iPad Pro landscape"];
-
-  const browser = await puppeteer.launch({
-    headless: !true,
-    args: ["--disable-extensions"],
-    dumpio: true
-  });
-
-  const page = await browser.newPage();
-
-  await page.emulate(iPad);
-
-  await page.goto(url, {
-    waitUntil: "domcontentloaded"
-  });
-
-  if (name === "home") {
-    // await page.waitFor(4000);
-  }
-
-  // await page.emulateMedia("screen");
-
-  const clip = await page.evaluate(_ => ({
-    x: 0,
-    y: 0,
-    width: document.body.scrollWidth,
-    height: document.body.scrollHeight
-  }));
-
-  await page.screenshot({
-    path: `public/images/${name}.png`,
-    // fullPage: true,
-    clip
-  });
-
-  await browser.close();
-}
