@@ -12,7 +12,7 @@
     "express": "^4.16.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "three": "^0.94.0"
+    "three": "^0.112.1"
   },
   "devDependencies": {
     "@types/three": "^0.92.12",
